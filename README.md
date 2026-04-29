@@ -144,6 +144,45 @@ python detect.py --weights yolov5s.pt --source 'https://youtu.be/LNwODJXcvt4'
 python detect.py --weights yolov5s.pt --source 'rtsp://example.com/media.mp4'
 ```
 
+**Saving results**
+
+```bash
+# Save detection labels to .txt files (YOLO format: class x y w h)
+python detect.py --weights yolov5s.pt --source path/to/images/ --save-txt
+
+# Save labels with confidence scores
+python detect.py --weights yolov5s.pt --source path/to/images/ --save-txt --save-conf
+
+# Save labels in Pascal-VOC format (pixel coordinates) instead of YOLO format
+python detect.py --weights yolov5s.pt --source path/to/images/ --save-txt --save-format 1
+
+# Save results to a CSV file (predictions.csv in the output directory)
+python detect.py --weights yolov5s.pt --source path/to/images/ --save-csv
+```
+
+**GPU / device selection**
+
+```bash
+# Run on first CUDA GPU
+python detect.py --weights yolov5s.pt --source path/to/images/ --device 0
+
+# Run on Apple Silicon (MPS)
+python detect.py --weights yolov5s.pt --source path/to/images/ --device mps
+
+# Use FP16 half-precision for faster GPU inference
+python detect.py --weights yolov5s.pt --source path/to/images/ --device 0 --half
+```
+
+**Resuming an interrupted run**
+
+Use `--resume` with `--exist-ok` to skip images that already have a saved label file, so a large batch can be continued without re-processing completed images:
+
+```bash
+python detect.py --weights yolov5s.pt --source path/to/images/ \
+  --save-txt --save-conf \
+  --exist-ok --resume
+```
+
 </details>
 
 <details>
