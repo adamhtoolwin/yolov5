@@ -2,6 +2,8 @@
 """Experimental modules."""
 
 import math
+import sys
+import types
 
 import numpy as np
 import torch
@@ -92,6 +94,16 @@ def attempt_load(weights, device=None, inplace=True, fuse=True):
     Example inputs: weights=[a,b,c] or a single model weights=[a] or weights=a.
     """
     from models.yolo import Detect, Model
+
+    # Allow loading weights saved when yolov5 was installed as a package
+    if "yolov5" not in sys.modules:
+        yolov5_shim = types.ModuleType("yolov5")
+        yolov5_shim.__path__ = sys.path
+        sys.modules.setdefault("yolov5", yolov5_shim)
+        import models as _models
+        import utils as _utils
+        sys.modules.setdefault("yolov5.models", _models)
+        sys.modules.setdefault("yolov5.utils", _utils)
 
     model = Ensemble()
     for w in weights if isinstance(weights, list) else [weights]:
