@@ -169,6 +169,12 @@ def run(
     save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     (save_dir / "labels" if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
 
+    # Resume: load manifest of already-processed images
+    manifest_path = save_dir / "processed.txt"
+    processed = set()
+    if resume and manifest_path.exists():
+        processed = set(manifest_path.read_text().splitlines())
+
     # Load model
     device = select_device(device)
     model = DetectMultiBackend(weights, device=device, dnn=dnn, data=data, fp16=half)
@@ -247,7 +253,7 @@ def run(
             save_path = str(save_dir / p.name)  # im.jpg
             txt_path = str(save_dir / "labels" / p.stem) + ("" if dataset.mode == "image" else f"_{frame}")  # im.txt
 
-            if resume and save_txt and Path(f"{txt_path}.txt").exists():
+            if resume and p.name in processed:
                 LOGGER.info(f"Skipping {p.name} (already processed)")
                 continue
 
@@ -320,6 +326,11 @@ def run(
                         save_path = str(Path(save_path).with_suffix(".mp4"))  # force *.mp4 suffix on results videos
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
                     vid_writer[i].write(im0)
+
+            # Record image as processed in manifest
+            if resume:
+                with open(manifest_path, "a") as f:
+                    f.write(f"{p.name}\n")
 
         # Print time (inference-only)
         LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1e3:.1f}ms")
