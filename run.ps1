@@ -4,13 +4,12 @@
 
 # 2. Define variables
 $weights = "D:\workspace\htoo\yolo_container_model.pt"
-$base_path = "D:\workspace\htoo\data\adam\bangkok\2019"
 
 $sources = @(
-    "$base_path\set1\phase_1\images",
-    "$base_path\set1\phase_2\images",
-    "$base_path\set2\phase_1\images",
-    "$base_path\set2\phase_2\images"
+    "D:\workspace\htoo\data\adam\bangkok\2019\set1\phase_1\images",
+    "D:\workspace\htoo\data\adam\bangkok\2019\set1\phase_2\images",
+    "D:\workspace\htoo\data\adam\bangkok\2019\set2\phase_1\images",
+    "D:\workspace\htoo\data\adam\bangkok\2019\set2\phase_2\images"
 )
 
 # 3. Loop through and run
